@@ -1,34 +1,38 @@
 from datetime import datetime
 
-from sqlalchemy import MetaData, Table, Column, Integer, String, TIMESTAMP, ForeignKey, JSON, Boolean
+from sqlalchemy import MetaData, Column, Integer, String, TIMESTAMP, ForeignKey, JSON, Boolean
 
-metadata = MetaData()
+from config import Base
 
-roles = Table('roles',
-              metadata,
-              Column('id', Integer, primary_key=True),
-              Column('name', String, nullable=False),
-              Column('permissions', JSON))
 
-users = Table('users',
-              metadata,
-              Column('id', Integer, primary_key=True),
-              Column('username', String, nullable=False),
-              Column('email', String, nullable=False),
-              Column('phone', Integer, primary_key=True),
-              Column('password', String, nullable=False),
-              Column('registered_at', TIMESTAMP, default=datetime.utcnow),
-              Column('trip_count', Integer, default=0),
-              Column('role', Integer, ForeignKey('roles.id'))
-              )
+class Roles(Base):
+    __tablename__ = 'Roles'
 
-cars = Table('cars',
-             metadata,
-             Column('brand', String, nullable=False),
-             Column('model', String, nullable=False),
-             Column('plate', String, primary_key=True, nullable=False),
-             Column('color', String, nullable=False,),
-             Column('available', Boolean, default=True),
-             Column('price', Integer, nullable=False),
-             )
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    permissions = Column(String)
 
+
+class Users(Base):
+    __tablename__ = 'Users'
+
+    id = Column(Integer, primary_key=True)
+    username = Column(String, nullable=False)
+    email = Column(String, nullable=False)
+    phone = Column(Integer, primary_key=True, nullable=False)
+    password = Column(String, nullable=False)
+    registered_at = Column(TIMESTAMP, default=datetime.utcnow)
+    trip_count = Column(Integer, default=0)
+    role = Column(String)
+
+
+class Cars(Base):
+    __tablename__ = 'Cars'
+
+    id = Column(Integer, primary_key=True)
+    brand = Column(String, nullable=False)
+    model = Column(String, nullable=False)
+    plate = Column(String, primary_key=True, nullable=False)
+    color = Column(String, nullable=False)
+    available = Column(Boolean, default=True)
+    price = Column(Integer, nullable=False)

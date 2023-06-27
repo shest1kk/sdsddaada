@@ -1,18 +1,29 @@
-from lib2to3.pytree import Base
-
-from sqlalchemy.orm import Session
 from fastapi import FastAPI
-from starlette.middleware.cors import CORSMiddleware
 
-app = FastAPI(
-    title="CARholdeRRR"
-)
+import models.models
+from config import engine
+from UserRouter import UsersRouter
+from RolesRouter import RolesRouter
+
+from fastapi.middleware.cors import CORSMiddleware
+
+models.models.Base.metadata.create_all(bind=engine)
+
+app = FastAPI()
+
+origins = [
+    "http://172.16.191.119:8080",
+    "http://localhost:8080",
+    "http://127.0.0.1:8080/",
+]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Позволяет всем ориджинам
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],  # Позволяет всем методам
-    allow_headers=["*"],  # Позволяет всем заголовкам
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
+app.include_router(RolesRouter, prefix='/roles', tags=['ROLES'])
+app.include_router(UsersRouter, prefix='/users', tags=['USERS'])
